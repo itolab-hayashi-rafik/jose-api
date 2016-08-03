@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/jose-api.iml" filepath="$PROJECT_DIR$/jose-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jose-toolbox.iml" filepath="$PROJECT_DIR$/jose-toolbox.iml" />
     </modules>
   </component>
 </project>
