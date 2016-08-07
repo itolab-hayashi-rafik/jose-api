@@ -15,10 +15,7 @@ function createUser(username, password, publicKey) {
         var d = Q.defer();
 
         // create a working list
-        var count = 0;
-        vms.forEach(function() {
-            count++;
-        });
+        var count = vms.length;
 
         // callback
         var cb = (function(count, d) {
@@ -60,7 +57,50 @@ function createUser(username, password, publicKey) {
 
 }
 
+function reboot() {
+
+    return jose.getVMs().then(function(data) {
+        // retrieve vm list
+        return data.vmList;
+    }).then(function(vms) {
+        var d = Q.defer();
+
+        var count = vms.length;
+
+        // callback
+        var cb = (function(count, d) {
+            return function () {
+                if (--count <= 0) {
+                    d.resolve();
+                }
+            }
+        })(count, d);
+
+        // for all vms
+        vms.forEach(function(vm) {
+            // reboot
+            console.log('stopping ' + vm.hostName);
+            jose.stopVM(vm).then(function() {
+                setTimeout((function(vm) {
+                    return function() {
+                        console.log('starting ' + vm.hostName);
+                        jose.startVM(vm).then(function() {
+                            cb();
+                        });
+                    };
+                })(vm), 10 * 1000)
+            });
+        });
+
+        return d.promise;
+    }).then(function() {
+        console.log('done');
+    });
+
+}
+
 function main() {
-    createUser('hogeuser', 'hogepass', '');
+    // createUser('hogeuser', 'hogepass', '');
+    reboot();
 }
 main();
